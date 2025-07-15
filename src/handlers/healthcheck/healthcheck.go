@@ -6,8 +6,8 @@ import (
 	"github.com/labstack/echo/v4"
 	"go.uber.org/fx"
 
-	hcmodel "go-api/models/healthcheck"
-	hcservice "go-api/services/healthcheck"
+	hcmodel "go-api/src/models/healthcheck"
+	hcservice "go-api/src/services/healthcheck"
 )
 
 // Handler defines the interface for healthcheck API handlers

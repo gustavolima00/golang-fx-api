@@ -1,13 +1,13 @@
-package config
+package services
 
 import (
 	"go.uber.org/fx"
 
-	"go-api/config/config"
+	"go-api/src/services/healthcheck"
 )
 
 var Module = fx.Options(
 	fx.Provide(
-		config.New,
+		healthcheck.New,
 	),
 )

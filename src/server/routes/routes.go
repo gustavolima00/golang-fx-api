@@ -8,7 +8,7 @@ import (
 	"go.uber.org/fx"
 
 	_ "go-api/.internal/docs"
-	"go-api/handlers/healthcheck"
+	"go-api/src/handlers/healthcheck"
 )
 
 // Params defines the dependencies for the routes module.

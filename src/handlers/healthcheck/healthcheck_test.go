@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 
-	mockhealthcheck "go-api/.internal/mocks/services/healthcheck"
+	mockhealthcheck "go-api/.internal/mocks/src/services/healthcheck"
 )
 
 // HandlerTestSuite ...

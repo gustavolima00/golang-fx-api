@@ -3,8 +3,8 @@ package server
 import (
 	"go.uber.org/fx"
 
-	"go-api/server/routes"
-	"go-api/server/server"
+	"go-api/src/server/routes"
+	"go-api/src/server/server"
 )
 
 var Module = fx.Options(
