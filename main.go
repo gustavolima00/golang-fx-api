@@ -2,8 +2,10 @@ package main
 
 import (
 	"context"
+	"go-api/src/clients"
 	"go-api/src/config"
 	"go-api/src/handlers"
+	"go-api/src/repositories"
 	"go-api/src/server"
 	"go-api/src/services"
 	"log"
@@ -27,6 +29,8 @@ func main() {
 	app := fx.New(
 		config.Module,
 		server.Module,
+		clients.Module,
+		repositories.Module,
 		services.Module,
 		handlers.Module,
 	)
