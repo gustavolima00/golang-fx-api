@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"go-api/src/config"
+	"go-api/src/common"
 	"go-api/src/handlers"
 	"go-api/src/server"
 	"go-api/src/services"
@@ -25,7 +25,7 @@ import (
 // @BasePath	/
 func main() {
 	app := fx.New(
-		config.Module,
+		common.Module,
 		server.Module,
 		services.Module,
 		handlers.Module,

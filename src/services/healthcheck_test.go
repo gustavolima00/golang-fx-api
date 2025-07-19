@@ -1,4 +1,4 @@
-package healthcheck
+package services
 
 import (
 	"testing"
@@ -9,7 +9,7 @@ import (
 
 // TestSetOnlineSince will test the SetOnlineSince function
 func TestSetOnlineSince(t *testing.T) {
-	s := New(Params{})
+	s := NewHealthcheckService()
 
 	// Test if the onlineSince is nil
 	_, err := s.OnlineSince()
