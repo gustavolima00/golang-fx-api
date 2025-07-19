@@ -2,12 +2,12 @@ package repositories
 
 import (
 	"go.uber.org/fx"
-
-	taskrepository "go-api/src/repositories/task-repository"
 )
 
-var Module = fx.Options(
+var Module = fx.Module(
+	"repositories",
 	fx.Provide(
-		taskrepository.New,
+		NewCommentRepository,
+		NewTaskRepository,
 	),
 )

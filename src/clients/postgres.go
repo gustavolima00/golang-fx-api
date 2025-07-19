@@ -1,8 +1,8 @@
-package postgres
+package clients
 
 import (
 	"fmt"
-	"go-api/src/config/config"
+	"go-api/src/common/config"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -10,22 +10,22 @@ import (
 	"go.uber.org/fx"
 )
 
-type Client interface {
+type PostgresClient interface {
 	GetConnection() *gorm.DB
 }
 
-type Params struct {
+type PostgresClientParams struct {
 	fx.In
 
 	Config *config.Config
 }
 
-type client struct {
+type postgresClient struct {
 	db     *gorm.DB
 	config *config.Config
 }
 
-func NewClient(p Params) (Client, error) {
+func NewPostgresClient(p PostgresClientParams) (PostgresClient, error) {
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=UTC",
 		p.Config.PostgresHost,
 		p.Config.PostgresUser,
@@ -37,12 +37,12 @@ func NewClient(p Params) (Client, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &client{
+	return &postgresClient{
 		db:     db,
 		config: p.Config,
 	}, nil
 }
 
-func (c *client) GetConnection() *gorm.DB {
+func (c *postgresClient) GetConnection() *gorm.DB {
 	return c.db
 }

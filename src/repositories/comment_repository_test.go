@@ -1,4 +1,4 @@
-package commnetrepository
+package repositories
 
 import (
 	"errors"
@@ -8,21 +8,21 @@ import (
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 
-	mockpostgres "go-api/.internal/mocks/src/clients/postgres"
-	models "go-api/src/models/comment"
+	"go-api/.internal/mocks/mockclients"
+	"go-api/src/models"
 )
 
-type RepositoryTestSuite struct {
+type CommentRepositoryTestSuite struct {
 	suite.Suite
 
 	db                 *gorm.DB
-	mockPostgresClient *mockpostgres.Client
+	mockPostgresClient *mockclients.MockPostgresClient
 	repository         CommentRepository
 }
 
-func (s *RepositoryTestSuite) SetupTest() {
+func (s *CommentRepositoryTestSuite) SetupTest() {
 	t := s.T()
-	s.mockPostgresClient = mockpostgres.NewClient(t)
+	s.mockPostgresClient = mockclients.NewMockPostgresClient(t)
 	db, err := gorm.Open(sqlite.Open(":memory:"), &gorm.Config{})
 	if err != nil {
 		t.Fatalf("failed to connect to test database: %v", err)
@@ -30,16 +30,16 @@ func (s *RepositoryTestSuite) SetupTest() {
 	s.db = db
 	s.mockPostgresClient.On("GetConnection").Return(db).Maybe()
 
-	s.repository = New(Params{
+	s.repository = NewCommentRepository(CommentRepositoryParams{
 		PostgresClient: s.mockPostgresClient,
 	})
 }
 
-func TestRepositoryTestSuite(t *testing.T) {
-	suite.Run(t, new(RepositoryTestSuite))
+func TestCommentRepositoryTestSuite(t *testing.T) {
+	suite.Run(t, new(CommentRepositoryTestSuite))
 }
 
-func (s *RepositoryTestSuite) TestGetTaskComments() {
+func (s *CommentRepositoryTestSuite) TestGetTaskComments() {
 	tests := map[string]struct {
 		setup            func()
 		taskId           int
@@ -88,7 +88,7 @@ func (s *RepositoryTestSuite) TestGetTaskComments() {
 	}
 }
 
-func (s *RepositoryTestSuite) TestCreateComment() {
+func (s *CommentRepositoryTestSuite) TestCreateComment() {
 	tests := map[string]struct {
 		setup         func()
 		input         models.Comment

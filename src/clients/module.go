@@ -1,13 +1,12 @@
 package clients
 
 import (
-	"go-api/src/clients/postgres"
-
 	"go.uber.org/fx"
 )
 
-var Module = fx.Options(
+var Module = fx.Module(
+	"clients",
 	fx.Provide(
-		postgres.NewClient,
+		NewPostgresClient,
 	),
 )

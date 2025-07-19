@@ -14,7 +14,7 @@ run:
 	go run main.go
 
 test:
-	go test -v -cover ./... 
+	go test -cover ./... 
 
 swag:
 	swag init -o .internal/docs

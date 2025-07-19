@@ -1,8 +1,8 @@
-package commnetrepository
+package repositories
 
 import (
-	"go-api/src/clients/postgres"
-	models "go-api/src/models/comment"
+	"go-api/src/clients"
+	"go-api/src/models"
 
 	"go.uber.org/fx"
 )
@@ -12,29 +12,29 @@ type CommentRepository interface {
 	CreateComment(comment models.Comment) error
 }
 
-type Params struct {
+type CommentRepositoryParams struct {
 	fx.In
-	PostgresClient postgres.Client
+	PostgresClient clients.PostgresClient
 }
 
-type repository struct {
-	postgresClient postgres.Client
+type commentRepository struct {
+	postgresClient clients.PostgresClient
 }
 
-func New(p Params) CommentRepository {
-	return &repository{
+func NewCommentRepository(p CommentRepositoryParams) CommentRepository {
+	return &commentRepository{
 		postgresClient: p.PostgresClient,
 	}
 }
 
-func (r *repository) GetTaskComments(taskId int) []models.Comment {
+func (r *commentRepository) GetTaskComments(taskId int) []models.Comment {
 	db := r.postgresClient.GetConnection()
 	var comments []models.Comment
 	db.Model(&models.Comment{}).Where("task_id = ?", taskId).Find(&comments)
 	return comments
 }
 
-func (r *repository) CreateComment(comment models.Comment) error {
+func (r *commentRepository) CreateComment(comment models.Comment) error {
 	db := r.postgresClient.GetConnection()
 	result := db.Create(&comment)
 	if result.Error != nil {

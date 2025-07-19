@@ -1,8 +1,8 @@
-package taskrepository
+package repositories
 
 import (
-	"go-api/src/clients/postgres"
-	models "go-api/src/models/task"
+	"go-api/src/clients"
+	"go-api/src/models"
 
 	"go.uber.org/fx"
 )
@@ -12,22 +12,22 @@ type TaskRepository interface {
 	CreateTask(task models.Task) error
 }
 
-type Params struct {
+type TaskRepositoryParams struct {
 	fx.In
-	PostgresClient postgres.Client
+	PostgresClient clients.PostgresClient
 }
 
-type repository struct {
-	postgresClient postgres.Client
+type taskRepository struct {
+	postgresClient clients.PostgresClient
 }
 
-func New(p Params) TaskRepository {
-	return &repository{
+func NewTaskRepository(p TaskRepositoryParams) TaskRepository {
+	return &taskRepository{
 		postgresClient: p.PostgresClient,
 	}
 }
 
-func (r *repository) GetTaskByID(id int) (*models.Task, error) {
+func (r *taskRepository) GetTaskByID(id int) (*models.Task, error) {
 	db := r.postgresClient.GetConnection()
 	var task models.Task
 	result := db.Model(&models.Task{}).Where("id = ?", id).First(&task)
@@ -37,7 +37,7 @@ func (r *repository) GetTaskByID(id int) (*models.Task, error) {
 	return &task, nil
 }
 
-func (r *repository) CreateTask(task models.Task) error {
+func (r *taskRepository) CreateTask(task models.Task) error {
 	db := r.postgresClient.GetConnection()
 	result := db.Create(&task)
 	if result.Error != nil {

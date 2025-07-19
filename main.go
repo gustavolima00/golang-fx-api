@@ -34,7 +34,11 @@ func main() {
 		services.Module,
 		handlers.Module,
 	)
+	// Start the application
+	startApp(app)
+}
 
+func startApp(app *fx.App) {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 

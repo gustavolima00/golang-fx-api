@@ -1,4 +1,4 @@
-package taskrepository
+package repositories
 
 import (
 	"errors"
@@ -8,21 +8,21 @@ import (
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 
-	mockpostgres "go-api/.internal/mocks/src/clients/postgres"
-	models "go-api/src/models/task"
+	"go-api/.internal/mocks/mockclients"
+	"go-api/src/models"
 )
 
-type RepositoryTestSuite struct {
+type TaskRepositoryTestSuite struct {
 	suite.Suite
 
 	db                 *gorm.DB
-	mockPostgresClient *mockpostgres.Client
+	mockPostgresClient *mockclients.MockPostgresClient
 	repository         TaskRepository
 }
 
-func (s *RepositoryTestSuite) SetupTest() {
+func (s *TaskRepositoryTestSuite) SetupTest() {
 	t := s.T()
-	s.mockPostgresClient = mockpostgres.NewClient(t)
+	s.mockPostgresClient = mockclients.NewMockPostgresClient(t)
 	// Mock the GetConnection method to return a test database connection
 	db, err := gorm.Open(sqlite.Open(":memory:"), &gorm.Config{})
 	if err != nil {
@@ -31,16 +31,16 @@ func (s *RepositoryTestSuite) SetupTest() {
 	s.db = db
 	s.mockPostgresClient.On("GetConnection").Return(db).Maybe()
 
-	s.repository = New(Params{
+	s.repository = NewTaskRepository(TaskRepositoryParams{
 		PostgresClient: s.mockPostgresClient,
 	})
 }
 
-func TestRepositoryTestSuite(t *testing.T) {
-	suite.Run(t, new(RepositoryTestSuite))
+func TestTaskRepositoryTestSuite(t *testing.T) {
+	suite.Run(t, new(TaskRepositoryTestSuite))
 }
 
-func (s *RepositoryTestSuite) TestGetTaskByID() {
+func (s *TaskRepositoryTestSuite) TestGetTaskByID() {
 	tests := map[string]struct {
 		setup         func()
 		id            int
@@ -96,7 +96,7 @@ func (s *RepositoryTestSuite) TestGetTaskByID() {
 	}
 }
 
-func (s *RepositoryTestSuite) TestCreateTask() {
+func (s *TaskRepositoryTestSuite) TestCreateTask() {
 	tests := map[string]struct {
 		setup         func()
 		task          models.Task

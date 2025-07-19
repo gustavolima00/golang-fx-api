@@ -1,4 +1,4 @@
-package comment
+package models
 
 type Comment struct {
 	ID      uint
