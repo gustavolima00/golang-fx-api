@@ -2,12 +2,11 @@ package handlers
 
 import (
 	"go.uber.org/fx"
-
-	"go-api/src/handlers/healthcheck"
 )
 
-var Module = fx.Options(
+var Module = fx.Module(
+	"handlers",
 	fx.Provide(
-		healthcheck.New,
+		NewHealthcheckHandler,
 	),
 )

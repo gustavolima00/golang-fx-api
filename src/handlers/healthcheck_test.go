@@ -1,4 +1,4 @@
-package healthcheck
+package handlers
 
 import (
 	"net/http"
@@ -10,39 +10,38 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 
-	mockhealthcheck "go-api/.internal/mocks/src/services/healthcheck"
+	"go-api/.internal/mocks/mockservices"
 )
 
 // HandlerTestSuite ...
-type HandlerTestSuite struct {
+type HealthcheckHandlerTestSuite struct {
 	suite.Suite
 
-	MockService *mockhealthcheck.Service
-
-	Handler Handler
+	mockService *mockservices.MockHealthcheckService
+	handler     HealthcheckHandler
 }
 
 // SetupTest ...
-func (s *HandlerTestSuite) SetupTest() {
+func (s *HealthcheckHandlerTestSuite) SetupTest() {
 	t := s.T()
-	s.MockService = mockhealthcheck.NewService(t)
-	s.Handler = New(Params{
-		HealthcheckService: s.MockService,
+	s.mockService = mockservices.NewMockHealthcheckService(t)
+	s.handler = NewHealthcheckHandler(Params{
+		HealthcheckService: s.mockService,
 	})
 }
 
 // SetupSubTest ...
-func (s *HandlerTestSuite) SetupSubTest() {
+func (s *HealthcheckHandlerTestSuite) SetupSubTest() {
 	s.SetupTest() // Clean up the mocks
 }
 
 // TestHandlerTestSuite ...
-func TestHandlerTestSuite(t *testing.T) {
-	suite.Run(t, new(HandlerTestSuite))
+func TestHealthcheckHandlerTestSuite(t *testing.T) {
+	suite.Run(t, new(HealthcheckHandlerTestSuite))
 }
 
 // TestGetAPIStatus ...
-func (s *HandlerTestSuite) TestGetAPIStatus() {
+func (s *HealthcheckHandlerTestSuite) TestGetAPIStatus() {
 	tests := map[string]struct {
 		MockSetup      func()
 		ExpectedStatus int
@@ -50,14 +49,14 @@ func (s *HandlerTestSuite) TestGetAPIStatus() {
 	}{
 		"success": {
 			MockSetup: func() {
-				s.MockService.On("OnlineSince").Return(time.Duration(10*time.Second), nil)
+				s.mockService.On("OnlineSince").Return(time.Duration(10*time.Second), nil)
 			},
 			ExpectedStatus: http.StatusOK,
 			ExpectedBody:   "{\"online_time\":\"10s\"}\n",
 		},
 		"fail to get online time": {
 			MockSetup: func() {
-				s.MockService.On("OnlineSince").Return(time.Duration(0), assert.AnError)
+				s.mockService.On("OnlineSince").Return(time.Duration(0), assert.AnError)
 			},
 			ExpectedStatus: http.StatusInternalServerError,
 		},
@@ -69,7 +68,7 @@ func (s *HandlerTestSuite) TestGetAPIStatus() {
 				tc.MockSetup()
 			}
 
-			resp, err := runHandler(s.Handler.GetAPIStatus)
+			resp, err := runHandler(s.handler.GetAPIStatus)
 
 			s.NoError(err)
 			s.Equal(tc.ExpectedStatus, resp.Code)

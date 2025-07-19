@@ -19,7 +19,7 @@ type Config struct {
 
 // New will parse the necessary env vars to
 // struct Config
-func New() *Config {
+func NewConfig() *Config {
 	c := new(Config)
 
 	if err := env.Parse(c); err != nil {

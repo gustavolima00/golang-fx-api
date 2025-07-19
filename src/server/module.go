@@ -9,7 +9,7 @@ import (
 
 var Module = fx.Options(
 	fx.Provide(
-		server.New,
+		server.NewServer,
 	),
 	fx.Invoke(
 		routes.Register,

@@ -1,4 +1,4 @@
-package healthcheck
+package handlers
 
 import (
 	"net/http"
@@ -6,8 +6,8 @@ import (
 	"github.com/labstack/echo/v4"
 	"go.uber.org/fx"
 
-	hcmodel "go-api/src/models/healthcheck"
-	hcservice "go-api/src/services/healthcheck"
+	"go-api/src/models"
+	"go-api/src/services"
 )
 
 // Handler defines the interface for healthcheck API handlers
@@ -16,7 +16,7 @@ import (
 // Each method should be associated with an HTTP route in the implementation.
 // The interface itself does not directly contribute to the Swagger documentation but
 // serves as the blueprint for the handler implementation.
-type Handler interface {
+type HealthcheckHandler interface {
 	// GetAPIStatus fetches the status of the API.
 	GetAPIStatus(e echo.Context) error
 }
@@ -25,17 +25,17 @@ type Handler interface {
 type Params struct {
 	fx.In
 
-	HealthcheckService hcservice.Service
+	HealthcheckService services.HealthcheckService
 }
 
-type handler struct {
-	hcService hcservice.Service
+type healthcheckHandler struct {
+	hcService services.HealthcheckService
 }
 
 // New injects the healthcheck service
 // into handler
-func New(p Params) Handler {
-	return &handler{
+func NewHealthcheckHandler(p Params) HealthcheckHandler {
+	return &healthcheckHandler{
 		hcService: p.HealthcheckService,
 	}
 }
@@ -49,13 +49,13 @@ func New(p Params) Handler {
 //	@Success		200	{object}	Status
 //	@Failure		500	{string}	error
 //	@Router			/ [get]
-func (h *handler) GetAPIStatus(e echo.Context) error {
+func (h *healthcheckHandler) GetAPIStatus(e echo.Context) error {
 	onlineTime, err := h.hcService.OnlineSince()
 	if err != nil {
 		return e.JSON(http.StatusInternalServerError, err.Error())
 	}
 
-	status := hcmodel.Status{
+	status := models.HealthcheckStatus{
 		OnlineTime: onlineTime.String(),
 	}
 

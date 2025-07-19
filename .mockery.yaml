@@ -1,5 +1,19 @@
 testonly: False
 with-expecter: True
-keeptree: True
 all: True
-output: .internal/mocks
+resolve-type-alias: False
+disable-version-string: True
+issue-845-fix: True
+packages:
+  go-api/src/services:
+    config:
+      dir: .internal/mocks/mockservices
+      outpkg: "mock{{.PackageName}}"
+    interfaces:
+      HealthcheckService:
+  go-api/src/handlers:
+    config:
+      dir: .internal/mocks/mockhandlers
+      outpkg: "mock{{.PackageName}}"
+    interfaces:
+      HealthcheckHandler:
