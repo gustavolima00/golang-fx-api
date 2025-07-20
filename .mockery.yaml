@@ -17,3 +17,16 @@ packages:
       outpkg: "mock{{.PackageName}}"
     interfaces:
       HealthcheckHandler:
+  go-api/src/clients:
+    config:
+      dir: .internal/mocks/mockclients
+      outpkg: "mock{{.PackageName}}"
+    interfaces:
+      PostgresClient:
+  go-api/src/repositories:
+    config:
+      dir: .internal/mocks/mockrepositories
+      outpkg: "mock{{.PackageName}}"
+    interfaces:
+      TaskRepository:
+      CommentRepository:

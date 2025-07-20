@@ -2,8 +2,10 @@ package main
 
 import (
 	"context"
+	"go-api/src/clients"
 	"go-api/src/common"
 	"go-api/src/handlers"
+	"go-api/src/repositories"
 	"go-api/src/server"
 	"go-api/src/services"
 	"log"
@@ -27,10 +29,16 @@ func main() {
 	app := fx.New(
 		common.Module,
 		server.Module,
+		clients.Module,
+		repositories.Module,
 		services.Module,
 		handlers.Module,
 	)
+	// Start the application
+	startApp(app)
+}
 
+func startApp(app *fx.App) {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
