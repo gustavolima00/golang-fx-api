@@ -2,7 +2,7 @@ package postgres
 
 import (
 	"fmt"
-	"go-api/src/config/config"
+	"go-api/src/common/config"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
